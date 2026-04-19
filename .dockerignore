@@ -1,0 +1,24 @@
+.venv/
+venv/
+env/
+
+# Кэш Python
+**/__pycache__/
+*.py[cod]
+
+# Git
+.git/
+.gitignore
+
+# Секреты (чтобы случайно не запечь их в образ)
+.env
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# Тесты и кэш инструментов
+.pytest_cache/
+.uv_cache/
+.ruff_cache/
