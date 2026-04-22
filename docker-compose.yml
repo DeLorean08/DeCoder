@@ -44,6 +44,15 @@ services:
     networks:
       - app-network
 
+  tunnel:
+    image: ngrok/ngrok:latest
+    restart: always
+    environment:
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+    command: ["http", "app:8000", "--log", "stdout"]
+    networks:
+      - app-network
+
 networks:
   app-network:
     driver: bridge

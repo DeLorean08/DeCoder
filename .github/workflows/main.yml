@@ -21,4 +21,4 @@ jobs:
       - name: Check dependencies and build
         run: |
           uv lock --check
-          docker compose build
+          POSTGRES_DB=test POSTGRES_USER=test POSTGRES_PASSWORD=test docker compose build
