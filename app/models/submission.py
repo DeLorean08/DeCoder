@@ -3,7 +3,6 @@ from sqlalchemy.orm import  Mapped, mapped_column, relationship
 from uuid import UUID
 from datetime import datetime
 from sqlalchemy import Enum as SAEnum
-from typing import List
 from .base import Base
 from enum import Enum as PyEnum
 
@@ -31,6 +30,6 @@ class Submission(Base):
     error_message: Mapped[str] = mapped_column(Text())
     created_at:  Mapped[datetime] = mapped_column(server_default=func.now())
 
-    users: Mapped[List["User"]] = relationship(back_populates="submissions", lazy="selectin")
-    problems: Mapped[List["Problem"]] = relationship(back_populates="submissions", lazy="selectin")
-    programming_languages: Mapped[List["Programming_language"]] = relationship(back_populates="submissions", lazy="selectin")
+    user: Mapped["User"] = relationship(back_populates="submissions", lazy="selectin")
+    problem: Mapped["Problem"] = relationship(back_populates="submissions", lazy="selectin")
+    language: Mapped["Programming_language"] = relationship(back_populates="submissions", lazy="selectin")
