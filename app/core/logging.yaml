@@ -1,0 +1,61 @@
+version: 1
+disable_existing_loggers: false
+
+formatters:
+  detailed: 
+    format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s - [%(filename)s:%(lineno)d]'
+    datefmt: '%Y-%m-%d %H:%M:%S'
+  json:
+    (): pythonjsonlogger.jsonlogger.JsonFormatter
+    format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s - [%(filename)s:%(lineno)d]'
+    datefmt: '%Y-%m-%d %H:%M:%S'
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: detailed
+    stream: ext://sys.stdout
+
+  general_info_file_json:
+    class: logging.handlers.RotatingFileHandler
+    level: INFO
+    formatter: json
+    filename: logs/app.json
+    maxBytes: 10485760
+    backupCount: 5
+    encoding: utf8
+
+  security_file_json: 
+    class: logging.handlers.RotatingFileHandler
+    level: INFO
+    formatter: json
+    filename: logs/security.json
+    maxBytes: 10485760
+    backupCount: 5
+    encoding: utf8
+
+  error_file_json:
+    class: logging.handlers.RotatingFileHandler
+    level: ERROR
+    formatter: json
+    filename: logs/error.json
+    maxBytes: 10485760
+    backupCount: 5
+    encoding: utf8
+
+loggers:
+  app: 
+    level: DEBUG
+    handlers: [console, general_info_file_json, error_file_json]
+    propagate: false
+
+  app.api.v1.endpoints.auth: 
+    level: INFO
+    handlers: [security_file_json] 
+    propagate: true
+
+  sqlalchemy.engine: 
+    level: WARNING
+    handlers: [console]
+    propagate: false
