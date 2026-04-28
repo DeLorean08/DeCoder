@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     POSTGRES_PASSWORD: str 
     POSTGRES_HOST: str 
     POSTGRES_PORT: int = 5432
+    TEST_POSTGRES_DB: str
     REDIS_HOST: str 
     REDIS_PORT: int = 6379
     SECRET_KEY: str
@@ -16,6 +17,9 @@ class Settings(BaseSettings):
     def database_url_async(self):
         return f"postgresql+psycopg_async://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
+    @property
+    def test_database_url_async(self):
+        return f"postgresql+psycopg_async://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.TEST_POSTGRES_DB}"
 
     model_config = SettingsConfigDict(
         env_file=".env", 

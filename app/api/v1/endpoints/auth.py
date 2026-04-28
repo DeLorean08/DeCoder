@@ -4,8 +4,8 @@ from app.dependencies import get_db
 from sqlalchemy.ext.asyncio import  AsyncSession
 from sqlalchemy import select
 from app.models.user import User
-from app.shemas.user import UserCreate
-from app.core.security import hash_password
+from app.shemas.user import UserCreate, UserLogin
+from app.core.security import hash_password, verify_password
 from uuid import uuid4
 from app.core.logging_config import logging
 
@@ -19,8 +19,7 @@ async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
     logger.debug(f"Попытка регистрации пользователя: {user.email}")
     result =  await db.execute(select(User).where(User.email == user.email))
     data = result.scalar_one_or_none()
-    request_db = time.perf_counter() - start_time
-    print(f"DB time: {request_db}")
+
     if data:
         logger.warning(
             f"Registration failed: email already exists", 
@@ -28,9 +27,7 @@ async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
         )
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Этот Email уже зарегистрирован")
         
-    hashed_start = time.perf_counter()
     hashed_password = hash_password(user.password)
-    hashed_time = time.perf_counter() - hashed_start
 
     try:
         new_id = uuid4()
@@ -53,7 +50,6 @@ async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
                 "user_id": str(new_id),
                 "email": user.email,
                 "latency": round(process_time, 4),
-                "hl": round(hashed_time, 4),
                 "action": "user_registration"
             }
         )
@@ -67,4 +63,28 @@ async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
             extra={"email": user.email}
         )
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Ошибка базы данных!")
+    
+@router.get("/login")
+async def login_user(user: UserLogin, db: AsyncSession = Depends(get_db)):
+    # start_time = time.perf_counter()
+    logger.debug(f"Попытка входа пользователя: {user.email}")
+    result =  await db.execute(select(User).where(User.email == user.email))
+    data = result.scalar_one_or_none()
+
+    if not data:
+        logger.warning(
+            f"Login failed: email or password not correct", 
+            extra={"email": user.email, "reason": "email_or_password_not_correct"}
+        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="email or password not correct")
+
+    valid_login = verify_password(user.password, User.hashed_password)
+
+    if not valid_login:
+        logger.warning(
+            f"Login failed: email or password not correct", 
+            extra={"email": user.email, "reason": "email_or_password_not_correct"}
+        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="email or password not correct")
+
     
