@@ -5,7 +5,8 @@ from sqlalchemy.ext.asyncio import  AsyncSession
 from sqlalchemy import select
 from app.models.user import User
 from app.shemas.user import UserCreate, UserLogin
-from app.core.security import hash_password, verify_password
+from app.shemas.token import Token
+from app.core.security import hash_password, verify_password, encode_jwt
 from uuid import uuid4
 from app.core.logging_config import logging
 
@@ -64,21 +65,20 @@ async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
         )
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Ошибка базы данных!")
     
-@router.get("/login")
+
 async def login_user(user: UserLogin, db: AsyncSession = Depends(get_db)):
-    # start_time = time.perf_counter()
     logger.debug(f"Попытка входа пользователя: {user.email}")
     result =  await db.execute(select(User).where(User.email == user.email))
-    data = result.scalar_one_or_none()
+    login_data = result.scalar_one_or_none()
 
-    if not data:
+    if not login_data:
         logger.warning(
             f"Login failed: email or password not correct", 
             extra={"email": user.email, "reason": "email_or_password_not_correct"}
         )
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="email or password not correct")
 
-    valid_login = verify_password(user.password, User.hashed_password)
+    valid_login = verify_password(user.password, login_data.hashed_password)
 
     if not valid_login:
         logger.warning(
@@ -86,5 +86,23 @@ async def login_user(user: UserLogin, db: AsyncSession = Depends(get_db)):
             extra={"email": user.email, "reason": "email_or_password_not_correct"}
         )
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="email or password not correct")
-
     
+    return login_data
+
+
+@router.post("/login", response_model=Token)
+def auth_user_issue_jwt(
+    user: User = Depends(login_user),
+):
+    jwt_payload = {
+        "sub": str(user.id),
+        "name": user.name,
+        "email": user.email
+    }
+    
+    token = encode_jwt(jwt_payload)
+
+    return Token(
+        access_token=token,
+        token_type="Bearer"
+    )

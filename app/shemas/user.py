@@ -8,7 +8,7 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str
 
-class UserLogin(BaseModel):
+class UserLogin(UserBase):
     password: str
 
 class UserOut(UserBase):
@@ -16,6 +16,6 @@ class UserOut(UserBase):
     is_active: bool
     model_config = ConfigDict(from_attributes=True, strict=True)
 
-class UserUpdate(BaseModel):
+class UserUpdate(UserBase):
     name: Optional[str]
     password: Optional[str]
