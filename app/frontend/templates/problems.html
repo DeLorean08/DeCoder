@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}DeCoder | Master Your Algorithms{% endblock %}
+
+{% block content %}
+    <header class="navbar">
+        <div class="container navbar-container">
+            <div class="nav-left">
+                <a href="{% if user %}/user/home{% else %}/{% endif %}" class="logo">DeCoder</a>
+                <nav>
+                    <ul class="nav-links">
+                        <li>
+                            <a href="/problem/" {% if not user %}class="active"{% endif %}>Problems</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="nav-right">
+                {% if user %}
+                    <div class="user-menu">
+                        <a href="/user/profile" class="profile-link">
+                            <div class="avatar">{{ user.name }}</div>
+                        </a>
+                        <a href="/user/logout" class="btn-logout">Logout</a>
+                    </div>
+                {% else %}
+                    <div class="auth-buttons">
+                        <a href="/auth/login" class="btn-login">Log In</a>
+                        <a href="/auth/register" class="btn-join">Join</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+    <main class="container">
+        <section class="problems-section">
+            <div class="section-header">
+                <h2>Algorithm Challenges</h2>
+                <p>Выберите задачу, чтобы начать практику</p>
+            </div>
+
+            <table class="problems-table">
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Title</th>
+                        <th>Difficulty</th>
+                        <th>Category</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="status-icon todo">○</span></td>
+                        <td><a href="/problem/1" class="problem-link">Two Sum</a></td>
+                        <td><span class="diff-level easy">Easy</span></td>
+                        <td>Arrays</td>
+                    </tr>
+                    <tr>
+                        <td><span class="status-icon solved">●</span></td>
+                        <td><a href="/problem/2" class="problem-link">Binary Tree Inorder Traversal</a></td>
+                        <td><span class="diff-level medium">Medium</span></td>
+                        <td>Trees</td>
+                    </tr>
+                    <tr>
+                        <td><span class="status-icon todo">○</span></td>
+                        <td><a href="/problem/3" class="problem-link">Merge K Sorted Lists</a></td>
+                        <td><span class="diff-level hard">Hard</span></td>
+                        <td>Linked Lists</td>
+                    </tr>
+                    <tr>
+                        <td><span class="status-icon todo">○</span></td>
+                        <td><a href="/problem/4" class="problem-link">Quick Sort Implementation</a></td>
+                        <td><span class="diff-level medium">Medium</span></td>
+                        <td>Sorting</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+{% endblock %}

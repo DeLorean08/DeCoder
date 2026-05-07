@@ -1,6 +1,7 @@
 services:
   app:
     build: .
+    command: sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
     ports:
       - "8000:8000"
     environment:
@@ -52,6 +53,7 @@ services:
     command: ["http", "app:8000", "--log", "stdout"]
     networks:
       - app-network
+
 
 networks:
   app-network:

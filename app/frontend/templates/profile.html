@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}DeCoder | Master Your Algorithms{% endblock %}
+
+{% block content %}
+    <header class="navbar">
+        <div class="container navbar-container">
+            <div class="nav-left">
+                <a href="{% if user %}/user/home{% else %}index.html{% endif %}" class="logo">DeCoder</a>
+                <nav>
+                    <ul class="nav-links">
+                        <li>
+                            <a href="/problem/" {% if not user %}class="active"{% endif %}>Problems</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="nav-right">
+                {% if user %}
+                    <div class="user-menu">
+                        <a href="/user/profile" class="profile-link">
+                            <div class="avatar">{{ user.name }}</div>
+                        </a>
+                        <a href="/user/logout" class="btn-logout">Logout</a>
+                    </div>
+                {% else %}
+                    <div class="auth-buttons">
+                        <a href="/auth/login" class="btn-login">Log In</a>
+                        <a href="/auth/register" class="btn-join">Join</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="dashboard-hero">
+            <h1>Welcome back, <span class="highlight">{{ user.name }}</span>!</h1>
+            <p>Ваш прогресс в алгоритмах растет. Продолжайте в том же духе.</p>
+        </section>
+
+        <section class="stats-grid">
+            <div class="stat-card">
+                <h3>Solved</h3>
+                <p class="stat-value">12</p>
+                <span class="stat-label">Problems</span>
+            </div>
+            <div class="stat-card">
+                <h3>Attempts</h3>
+                <p class="stat-value">48</p>
+                <span class="stat-label">Total Submissions</span>
+            </div>
+            <div class="stat-card">
+                <h3>Rank</h3>
+                <p class="stat-value">#1,240</p>
+                <span class="stat-label">Global Position</span>
+            </div>
+        </section>
+
+        <section class="recent-activity">
+            <h2>Recent Attempts</h2>
+            <div class="activity-list">
+                <div class="activity-item">
+                    <span class="activity-status success">Accepted</span>
+                    <span class="activity-title">Two Sum</span>
+                    <span class="activity-date">2 hours ago</span>
+                </div>
+                <div class="activity-item">
+                    <span class="activity-status failure">Wrong Answer</span>
+                    <span class="activity-title">Binary Tree Inorder</span>
+                    <span class="activity-date">Yesterday</span>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock %}

@@ -24,8 +24,8 @@ class Problem(Base):
     memory_limit:  Mapped[int] = mapped_column(Integer())
     is_published: Mapped[bool] = mapped_column(Boolean())
 
-    submissions: Mapped[List["Submission"]] = relationship(back_populates="problems", lazy="selectin")
-    test_cases: Mapped[List["Test_case"]] = relationship(back_populates="problems", lazy="selectin")
+    submissions: Mapped[List["Submission"]] = relationship(back_populates="problem", lazy="selectin")
+    test_cases: Mapped[List["Test_case"]] = relationship(back_populates="problem", lazy="selectin")
 
 class Test_case(Base):
     __tablename__ = "test_cases"
