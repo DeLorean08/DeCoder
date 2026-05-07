@@ -1,21 +1,39 @@
 import time
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Response, Request
+from fastapi.responses import HTMLResponse, RedirectResponse
 from app.dependencies import get_db
 from sqlalchemy.ext.asyncio import  AsyncSession
 from sqlalchemy import select
 from app.models.user import User
-from app.shemas.user import UserCreate, UserLogin
 from app.shemas.token import Token
+from app.shemas.user import UserCreate, UserLogin
+from pathlib import Path
 from app.core.security import hash_password, verify_password, encode_jwt
 from uuid import uuid4
+from fastapi.templating import Jinja2Templates
 from app.core.logging_config import logging
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/auth", tags=["AUTH"])
 
-@router.post("/register", status_code=201)
-async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
+template_dir = Path(__file__).parent.parent.parent.parent / "frontend" / "templates"
+templates = Jinja2Templates(directory=template_dir)
+
+@router.get("/register", response_class=HTMLResponse)
+async def get_register_page(request: Request):
+    return templates.TemplateResponse(request=request, name="register.html", context={"request": request})
+
+@router.get("/login", response_class=HTMLResponse)
+async def get_login_page(request: Request):
+    return templates.TemplateResponse(request=request, name="login.html", context={"request": request})
+
+
+
+@router.post("/register_user", status_code=200)
+async def create_user(user: UserCreate = Depends(UserCreate.as_form),
+    db: AsyncSession = Depends(get_db)):
+
     start_time = time.perf_counter()
     logger.debug(f"Попытка регистрации пользователя: {user.email}")
     result =  await db.execute(select(User).where(User.email == user.email))
@@ -54,7 +72,7 @@ async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
                 "action": "user_registration"
             }
         )
-        return {"message": "Регистрация успешно прошла!"}
+        return RedirectResponse(url="/auth/login", status_code=303)
     
     except Exception as e:
         await db.rollback()
@@ -64,9 +82,13 @@ async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
             extra={"email": user.email}
         )
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Ошибка базы данных!")
+   
     
 
-async def login_user(user: UserLogin, db: AsyncSession = Depends(get_db)):
+async def login_user(
+    user: UserLogin = Depends(UserLogin.as_form),
+    db: AsyncSession = Depends(get_db)):
+    
     logger.debug(f"Попытка входа пользователя: {user.email}")
     result =  await db.execute(select(User).where(User.email == user.email))
     login_data = result.scalar_one_or_none()
@@ -90,8 +112,9 @@ async def login_user(user: UserLogin, db: AsyncSession = Depends(get_db)):
     return login_data
 
 
-@router.post("/login", response_model=Token)
+@router.post("/login_user", response_model=Token)
 def auth_user_issue_jwt(
+    response: Response,
     user: User = Depends(login_user),
 ):
     jwt_payload = {
@@ -101,8 +124,14 @@ def auth_user_issue_jwt(
     }
     
     token = encode_jwt(jwt_payload)
+    response = RedirectResponse(url="/user/home", status_code=303)
 
-    return Token(
-        access_token=token,
-        token_type="Bearer"
+    response.set_cookie(
+        key="access_token", 
+        value=token, 
+        httponly=True,   
+        max_age=3600,
+        samesite="lax"   
     )
+
+    return response

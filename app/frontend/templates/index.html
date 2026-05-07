@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}DeCoder | Master Your Algorithms{% endblock %}
+
+{% block content %}
+    <header class="navbar">
+        <div class="container navbar-container">  
+            <div class="nav-left">
+                <a href="/" class="logo">DeCoder</a>
+                <nav>
+                    <ul class="nav-links">
+                        <li><a href="/problem/>Problems</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <div class="auth-buttons nav-right">
+                <a href="/auth/login" class="btn-login">Log In</a>
+                <a href="/auth/register" class="btn-join">Join</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="hero">
+        <div class="hero-content">
+            <h1>Master Your Algorithm Knowledge</h1>
+            <p>Улучшайте навыки программирования, решая алгоритмические задачи разной сложности.</p>
+            <a href="/auth/register" class="btn-primary">Get Started</a>
+        </div>
+    </main>
+{% endblock %}
+
+

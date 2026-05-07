@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}DeCoder | Master Your Algorithms{% endblock %}
+
+{% block content %}
+    <header class="navbar">
+        <div class="container navbar-container">
+            <div class="nav-left">
+                <a href="/user/home" class="logo">DeCoder</a>
+                <nav>
+                    <ul class="nav-links">
+                        <li><a href="/problem/">Problems</a></li>
+                    </ul>
+                </nav>
+            </div>
+            
+            <div class="nav-right user-menu">
+                <a href="/user/profile" class="profile-link">
+                    <div class="avatar">{{ user.name }}</div>
+                </a>
+                <a href="/user/logout" class="btn-logout">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container home-layout">
+        <section class="news-feed">
+            <div class="section-title">
+                <h2>Platform Updates</h2>
+                <p>Что нового в DeCoder</p>
+            </div>
+
+            <article class="news-card">
+                <div class="news-date">23 апреля, 2026</div>
+                <h3>Запуск системы достижений</h3>
+                <p>Теперь за решение задач вы получаете опыт и уникальные значки. Первые 100 пользователей получат значок "Основатель".</p>
+                <span class="tag">New Feature</span>
+            </article>
+
+            <article class="news-card">
+                <div class="news-date">20 апреля, 2026</div>
+                <h3>Обновление ядра Docker</h3>
+                <p>Мы оптимизировали запуск ваших решений. Теперь проверка кода занимает в 2 раза меньше времени.</p>
+                <span class="tag">Optimization</span>
+            </article>
+
+            <article class="news-card">
+                <div class="news-date">15 апреля, 2026</div>
+                <h3>Новые задачи на деревья</h3>
+                <p>Добавлено 10 новых задач среднего уровня сложности на тему бинарных деревьев поиска.</p>
+                <span class="tag">Content</span>
+            </article>
+        </section>
+
+        <aside class="sidebar">
+            <div class="sidebar-card">
+                <h3>Global Stats</h3>
+                <div class="side-stat">
+                    <span>Total Problems:</span>
+                    <strong>156</strong>
+                </div>
+                <div class="side-stat">
+                    <span>Users Online:</span>
+                    <strong>42</strong>
+                </div>
+            </div>
+
+            <div class="sidebar-card">
+                <h3>Daily Challenge</h3>
+                <p class="challenge-name">Invert Binary Tree</p>
+                <a href="/problems/daily" class="btn-secondary">Solve Now</a>
+            </div>
+        </aside>
+    </main>
+{% endblock %}

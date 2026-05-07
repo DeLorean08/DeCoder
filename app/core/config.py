@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     REDIS_PORT: int = 6379
     SECRET_KEY: str
     ALGORITHM: str
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 720
 
     @property
     def database_url_async(self):
