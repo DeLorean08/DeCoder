@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}DeCoder | Master Your Algorithms{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+
+    <header class="navbar">
+        <div class="container navbar-container">
+            <div class="nav-left">
+                <a href="{% if user %}/user/home{% else %}index.html{% endif %}" class="logo">DeCoder</a>
+                <nav>
+                    <ul class="nav-links">
+                        <li>
+                            <a href="/problem/" {% if not user %}class="active"{% endif %}>Problems</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="nav-right">
+                {% if user %}
+                    <div class="user-menu">
+                        <a href="/user/profile" class="profile-link">
+                            <div class="avatar">{{ user.name }}</div>
+                        </a>
+                        <a href="/user/logout" class="btn-logout">Logout</a>
+                    </div>
+                {% else %}
+                    <div class="auth-buttons">
+                        <a href="/auth/login" class="btn-login">Log In</a>
+                        <a href="/auth/register" class="btn-join">Join</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main class="problem-container" style="height: calc(100vh - 70px);">
+        <section class="description-panel">
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                <h1 style="margin: 0; font-size: 24px; color: var(--text-main);">{{ problem.title }}</h1>
+                <span class="badge-easy">{{ problem.difficulty }}</span>
+            </div>
+
+            <div class="prose">
+                {{ problem.description | safe }}
+            </div>
+
+            <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border-light);">
+                <h3 style="font-size: 14px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 15px;">Topic Tags</h3>
+                <div style="display: flex; gap: 10px;">
+                    <span class="tag">Array</span>
+                    <span class="tag">Hash Table</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="editor-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background-color: var(--bg-description); border-bottom: 1px solid var(--border-light);">
+                <div style="font-size: 12px; font-weight: bold; color: var(--text-muted);">
+                    <span style="color: var(--success); margin-right: 8px;">●</span> Python 3.12
+                </div>
+                <button form="code-form" class="btn-run">
+                    Run Code
+                </button>
+            </div>
+            
+            <form id="code-form" style="display: flex; flex: 1; flex-direction: column;">
+                <textarea 
+                    id="code-editor"
+                    spellcheck="false"
+                    placeholder="Write your solution here..."
+                >{{ problem.starter_code }}</textarea>
+            </form>
+
+            <div style="height: 25%; border-top: 1px solid var(--border-light); background-color: var(--bg-description); padding: 20px; overflow-y: auto;">
+                <div style="font-size: 10px; font-weight: bold; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px;">Console</div>
+                <div id="console-output" style="font-family: var(--font-code); font-size: 13px; color: var(--text-dark);">
+                    > Натисніть "Run Code" щоб побачити результат...
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+    
+    <script>
+        var editor = CodeMirror.fromTextArea(document.getElementById("code-editor"), {
+            mode: "python",
+            theme: "dracula",
+            lineNumbers: true,
+            indentUnit: 4,
+            matchBrackets: true,
+            autoCloseBrackets: true,
+            extraKeys: {"Tab": "indentMore", "Shift-Tab": "indentLess"}
+        });
+
+        document.getElementById("code-form").addEventListener("submit", async function(e) {
+            e.preventDefault(); // Зупиняємо стандартну відправку форми
+            const consoleOut = document.getElementById("console-output");
+            consoleOut.innerHTML = "> Виконується код... зачекайте ⏳";
+            
+            try {
+                const response = await fetch("/problem/execute-twosum", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ submission: editor.getValue() }) 
+                });
+                const resultHtml = await response.text();
+                consoleOut.innerHTML = resultHtml;
+            } catch (err) {
+                consoleOut.innerHTML = "<span style='color: red;'>Помилка з'єднання з сервером</span>";
+            }
+        });
+    </script>
+
+    <style>
+        .CodeMirror {
+            flex: 1;
+            height: auto;
+            font-size: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        }
+    </style>
+{% endblock %}

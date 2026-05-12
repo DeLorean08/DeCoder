@@ -13,6 +13,8 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 # --- Stage 2: Run ---
 FROM python:3.12-slim-bookworm
 
+COPY --from=docker:cli /usr/local/bin/docker /usr/local/bin/
+
 WORKDIR /app
 
 COPY --from=builder /app/.venv /app/.venv
@@ -21,8 +23,9 @@ ENV PATH="/app/.venv/bin:$PATH"
 
 COPY . .
 
-RUN useradd -m appuser && chown -R appuser /app
-USER appuser
+# Коментуємо створення користувача, щоб мати root-доступ до /var/run/docker.sock
+# RUN useradd -m appuser && chown -R appuser /app
+# USER appuser
 
 EXPOSE 8000
 

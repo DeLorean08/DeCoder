@@ -14,5 +14,7 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(), unique=True)
     hashed_password: Mapped[str] = mapped_column(String())
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+    is_active: Mapped[bool] =  mapped_column(Boolean())
+    is_admin: Mapped[bool] =  mapped_column(Boolean())
 
     submissions: Mapped[List["Submission"]] = relationship(back_populates="user", cascade="all, delete-orphan", lazy="selectin")
