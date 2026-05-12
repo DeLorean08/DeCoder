@@ -19,6 +19,7 @@ class Problem(Base):
     id: Mapped[UUID] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(String())
     description: Mapped[str] = mapped_column(Text())
+    starter_code: Mapped[str] = mapped_column(String())
     difficulty: Mapped[Difficult] = mapped_column(SAEnum(Difficult, native_enum=False))
     time_limit: Mapped[int] = mapped_column(Integer())
     memory_limit:  Mapped[int] = mapped_column(Integer())

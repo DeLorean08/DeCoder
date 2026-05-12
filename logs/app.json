@@ -113,3 +113,11 @@
 {"asctime": "2026-05-07 20:28:34", "name": "app.api.v1.endpoints.auth", "levelname": "INFO", "message": "User created successfully: spaaceduke@gmail.com", "filename": "auth.py", "lineno": 66, "user_id": "24dc2dc4-f586-43bb-b26a-40a9651320b7", "email": "spaaceduke@gmail.com", "latency": 1.4753, "action": "user_registration"}
 {"asctime": "2026-05-07 20:32:41", "name": "app.main", "levelname": "INFO", "message": "Application DeCoder is starting up...", "filename": "main.py", "lineno": 32}
 {"asctime": "2026-05-07 20:34:03", "name": "app.api.v1.endpoints.auth", "levelname": "INFO", "message": "User created successfully: GrandBlackGloryHole@uran.us", "filename": "auth.py", "lineno": 66, "user_id": "755c95db-28f7-4c2f-915b-58ab961b372c", "email": "GrandBlackGloryHole@uran.us", "latency": 2.196, "action": "user_registration"}
+{"asctime": "2026-05-08 16:35:42", "name": "app.main", "levelname": "INFO", "message": "Application DeCoder is starting up...", "filename": "main.py", "lineno": 32}
+{"asctime": "2026-05-10 11:35:45", "name": "app.main", "levelname": "INFO", "message": "Application DeCoder is starting up...", "filename": "main.py", "lineno": 32}
+{"asctime": "2026-05-10 11:52:29", "name": "app.main", "levelname": "INFO", "message": "Application DeCoder is starting up...", "filename": "main.py", "lineno": 32}
+{"asctime": "2026-05-10 12:14:54", "name": "app.main", "levelname": "INFO", "message": "Application DeCoder is starting up...", "filename": "main.py", "lineno": 32}
+{"asctime": "2026-05-10 12:15:07", "name": "app.api.v1.endpoints.auth", "levelname": "WARNING", "message": "Login failed: email or password not correct", "filename": "auth.py", "lineno": 106, "email": "kepnono@gmail.com", "reason": "email_or_password_not_correct"}
+{"asctime": "2026-05-10 12:24:27", "name": "app.main", "levelname": "INFO", "message": "Application DeCoder is starting up...", "filename": "main.py", "lineno": 32}
+{"asctime": "2026-05-10 12:34:14", "name": "app.main", "levelname": "INFO", "message": "Application DeCoder is starting up...", "filename": "main.py", "lineno": 32}
+{"asctime": "2026-05-11 19:42:00", "name": "app.main", "levelname": "INFO", "message": "Application DeCoder is starting up...", "filename": "main.py", "lineno": 32}
